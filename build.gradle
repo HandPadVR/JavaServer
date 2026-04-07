@@ -42,7 +42,39 @@ tasks.register("copyRelease") {
         var out = tasks.shadowJar.outputs.files.first()
         var jp = file("JPackage/input/HandPadVR-release-all.jar")
         jp.delete()
-        out.renameTo(jp)
+        java.nio.file.Files.copy(out.toPath(), jp.toPath())
     }
 }
 tasks.shadowJar.finalizedBy("copyRelease")
+
+import java.util.jar.JarFile
+tasks.register("collectLicenses") {
+    def licenseOutputDir = file("JPackage/input/licenses")
+    licenseOutputDir.mkdirs()
+    group = "build"
+    description = "Collects all license files"
+
+    doLast {
+        licenseOutputDir.mkdirs()
+
+        configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            def file = artifact.file
+            if (!file.name.endsWith(".jar")) return
+
+            def jar = new JarFile(file)
+            def licenseEntry = jar.entries().find { it.name.equalsIgnoreCase("license.txt") || it.name.toLowerCase().endsWith("/license.txt") }
+            if (licenseEntry) {
+                def artifactId = artifact.name
+                def outputFile = new File(licenseOutputDir, "${artifactId}.txt")
+
+                jar.getInputStream(licenseEntry).withStream { input ->
+                    outputFile.withOutputStream { out ->
+                        out << input
+                    }
+                }
+                println "Copied license for $artifactId to $outputFile"
+            }
+        }
+    }
+}
+tasks.shadowJar.finalizedBy("collectLicenses")
