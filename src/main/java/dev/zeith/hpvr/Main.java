@@ -1,6 +1,5 @@
 package dev.zeith.hpvr;
 
-import com.illposed.osc.transport.*;
 import dev.zeith.hpvr.app.HPVRDeviceHandler;
 import dev.zeith.hpvr.cfg.HPVRConfig;
 import dev.zeith.hpvr.net.hpvr.HPVRDiscovery;
@@ -9,7 +8,6 @@ import dev.zeith.hpvr.vrchat.VRChat;
 import lombok.SneakyThrows;
 
 import java.io.File;
-import java.net.*;
 import java.nio.file.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,10 +40,6 @@ public class Main
 		Path cfgFile = appdata.resolve("Config.json");
 		
 		AtomicReference<HPVRConfig> cfg = new AtomicReference<>(HPVRConfig.load(cfgFile));
-		
-		int vrcOscPort = cfg.get().port2vrcOsc();
-		
-		IO.println("[Main] Sending to VRChat on port " + vrcOscPort);
 		
 		IO.println("[Main] Starting OSCQuery");
 		oscQuery = new OSCQueryService();

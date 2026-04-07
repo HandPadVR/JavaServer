@@ -6,11 +6,9 @@ import lombok.*;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Map;
 
 @With
 public record HPVRConfig(
-		@SerializedName("Port To VRC OSC") int port2vrcOsc,
 		@SerializedName("Log Button Events") boolean logButtonEvents
 )
 {
@@ -18,7 +16,7 @@ public record HPVRConfig(
 			.setPrettyPrinting()
 			.create();
 	
-	public static final HPVRConfig DEFAULT = new HPVRConfig(9000, false);
+	public static final HPVRConfig DEFAULT = new HPVRConfig(false);
 	
 	public static HPVRConfig load(Path file)
 			throws IOException
