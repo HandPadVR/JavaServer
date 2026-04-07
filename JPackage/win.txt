@@ -1,0 +1,1 @@
+--win-dir-chooser --win-menu --win-console

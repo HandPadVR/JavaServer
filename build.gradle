@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id("com.gradleup.shadow") version "9.4.0"
+}
+
+group = 'dev.zeith'
+version = 'release'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Source: https://mvnrepository.com/artifact/com.illposed.osc/javaosc-core
+    implementation("com.illposed.osc:javaosc-core:0.9")
+
+    implementation("org.mozilla:rhino:1.9.1")
+
+    implementation("org.jmdns:jmdns:3.6.3")
+
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    implementation("org.jetbrains:annotations:13.0")
+    annotationProcessor("org.jetbrains:annotations:13.0")
+
+    compileOnly("org.projectlombok:lombok:1.18.44")
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "dev.zeith.hpvr.Main"
+    }
+}
+
+tasks.shadowJar {
+    addMultiReleaseAttribute = false
+}

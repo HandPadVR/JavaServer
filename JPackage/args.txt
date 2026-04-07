@@ -1,0 +1,1 @@
+--type msi --copyright Zeitheron --vendor "Zeith.DEV" --name "HandPadVR" --description "HandPadVR integration with VRChat through OSC" --icon icon.ico --temp tmp --dest out --input input --main-jar HandPadVR-release-all.jar --main-class dev.zeith.hpvr.Main --verbose
