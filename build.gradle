@@ -36,3 +36,13 @@ tasks.jar {
 tasks.shadowJar {
     addMultiReleaseAttribute = false
 }
+
+tasks.register("copyRelease") {
+    it.doLast {
+        var out = tasks.shadowJar.outputs.files.first()
+        var jp = file("JPackage/input/HandPadVR-release-all.jar")
+        jp.delete()
+        out.renameTo(jp)
+    }
+}
+tasks.shadowJar.finalizedBy("copyRelease")
