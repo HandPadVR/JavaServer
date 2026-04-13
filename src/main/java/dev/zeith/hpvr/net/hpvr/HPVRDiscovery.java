@@ -56,7 +56,7 @@ public class HPVRDiscovery
 		byte[] buffer = new byte[BUFFER_SIZE];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		
-		IO.println("[Net] Searching for HandPadVR devices on LAN...");
+		IO.println("[Net] Searching for HandPadVR devices on LAN... Broadcasting form port " + socket.getLocalPort());
 		
 		while(!socket.isClosed() && !Thread.currentThread().isInterrupted())
 		{

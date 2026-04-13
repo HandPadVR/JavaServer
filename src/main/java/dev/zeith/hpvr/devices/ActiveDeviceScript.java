@@ -141,7 +141,12 @@ public class ActiveDeviceScript
 			return paramPrefix + param;
 		}
 		
-		public Object start()
+		public void changeAvatar(String avtr_ID)
+		{
+			start().addStr("/avatar/change", avtr_ID);
+		}
+		
+		public OscBuilder start()
 		{
 			return new OscBuilder(outPort, console);
 		}
@@ -163,7 +168,19 @@ public class ActiveDeviceScript
 			return this;
 		}
 		
+		public OscBuilder addBoolean(String addr, boolean value)
+		{
+			packets.add(new OSCMessage(addr, List.of(value)));
+			return this;
+		}
+		
 		public OscBuilder addInt(String addr, int value)
+		{
+			packets.add(new OSCMessage(addr, List.of(value)));
+			return this;
+		}
+		
+		public OscBuilder addInteger(String addr, int value)
 		{
 			packets.add(new OSCMessage(addr, List.of(value)));
 			return this;
@@ -173,6 +190,23 @@ public class ActiveDeviceScript
 		{
 			packets.add(new OSCMessage(addr, List.of(value)));
 			return this;
+		}
+		
+		public OscBuilder addString(String addr, String value)
+		{
+			packets.add(new OSCMessage(addr, List.of(value)));
+			return this;
+		}
+		
+		public OscBuilder addStr(String addr, String value)
+		{
+			packets.add(new OSCMessage(addr, List.of(value)));
+			return this;
+		}
+		
+		public OscBuilder addBoolean(ParameterIO addr, boolean value)
+		{
+			return addBool(addr, value);
 		}
 		
 		public OscBuilder addBool(ParameterIO addr, boolean value)
@@ -188,7 +222,14 @@ public class ActiveDeviceScript
 				case Bool -> addBool(a, value);
 				case Int -> addInt(a, value ? 1 : 0);
 				case Float -> addFloat(a, value ? 1F : 0F);
+				case String -> addStr(a, Boolean.toString(value));
+				default -> this;
 			};
+		}
+		
+		public OscBuilder addInteger(ParameterIO addr, int value)
+		{
+			return addInt(addr, value);
 		}
 		
 		public OscBuilder addInt(ParameterIO addr, int value)
@@ -204,6 +245,8 @@ public class ActiveDeviceScript
 				case Bool -> addBool(a, value > 0);
 				case Int -> addInt(a, value);
 				case Float -> addFloat(a, value / intScale);
+				case String -> addStr(a, Integer.toString(value));
+				default -> this;
 			};
 		}
 		
@@ -220,6 +263,29 @@ public class ActiveDeviceScript
 				case Bool -> addBool(a, value > 0F);
 				case Int -> addInt(a, Math.round(value * intScale));
 				case Float -> addFloat(a, value);
+				case String -> addStr(a, Float.toString(value));
+				default -> this;
+			};
+		}
+		
+		public OscBuilder addString(ParameterIO addr, String value)
+		{
+			return addStr(addr, value);
+		}
+		
+		public OscBuilder addStr(ParameterIO addr, String value)
+		{
+			if(!addr.canUpdate())
+			{
+				console.warn("Tried writing to read-only parameter: " + addr.name);
+				return this;
+			}
+			String a = addr.input.address();
+			return switch(addr.input.type())
+			{
+				case Bool -> addBool(a, "true".equals(value));
+				case Int, Float -> this;
+				case String -> addStr(a, value);
 			};
 		}
 		

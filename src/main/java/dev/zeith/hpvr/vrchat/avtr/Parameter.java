@@ -6,7 +6,8 @@ public record Parameter(String address, ParameterType type)
 	{
 		Bool,
 		Int,
-		Float
+		Float,
+		String
 	}
 	
 	@Override
